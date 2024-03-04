@@ -1,0 +1,7 @@
+(ns tic-tac-toe\rule)
+
+(defn create-matrix []
+  [[0 0 0]
+   [0 0 0]
+   [0 0 0]])
+

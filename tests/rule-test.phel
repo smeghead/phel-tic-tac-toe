@@ -1,0 +1,8 @@
+(ns tic-tac-toe\rule\tests
+  (:require phel\test :refer [deftest is])
+  (:require tic-tac-toe\rule))
+
+(deftest rule-test
+  (let [matrix (rule/create-matrix)]
+    (is (= 3 (count matrix)))
+    (is (= 3 (count (matrix 0))))))
