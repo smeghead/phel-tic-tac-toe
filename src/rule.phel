@@ -13,49 +13,23 @@
   (let [value (get-in matrix [x y])]
     (or (value-map value) "_")))
 
+(defn- check-line [matrix target p1 p2 p3]
+  (and
+    (= (get-in matrix p1) target)
+    (= (get-in matrix p2) target)
+    (= (get-in matrix p3) target)
+    target))
 
 (defn- check-lines [matrix target]
   (or
-    (if (= (->> (range 0 3)
-             (map (fn [x] (get-in matrix [0 x])))
-             (filter (fn [x] (= x target)))
-             (count)) 3)
-      target)
-    (if (= (->> (range 0 3)
-             (map (fn [x] (get-in matrix [1 x])))
-             (filter (fn [x] (= x target)))
-             (count)) 3)
-      target)
-    (if (= (->> (range 0 3)
-             (map (fn [x] (get-in matrix [2 x])))
-             (filter (fn [x] (= x target)))
-             (count)) 3)
-      target)
-    (if (= (->> (range 0 3)
-             (map (fn [x] (get-in matrix [x 0])))
-             (filter (fn [x] (= x target)))
-             (count)) 3)
-      target)
-    (if (= (->> (range 0 3)
-             (map (fn [x] (get-in matrix [x 1])))
-             (filter (fn [x] (= x target)))
-             (count)) 3)
-      target)
-    (if (= (->> (range 0 3)
-             (map (fn [x] (get-in matrix [x 2])))
-             (filter (fn [x] (= x target)))
-             (count)) 3)
-      target)
-    (and
-      (= (get-in matrix [0 0]) target)
-      (= (get-in matrix [1 1]) target)
-      (= (get-in matrix [2 2]) target)
-      target)
-    (and
-      (= (get-in matrix [0 2]) target)
-      (= (get-in matrix [1 1]) target)
-      (= (get-in matrix [2 0]) target)
-      target)))
+    (check-line matrix target [0 0] [0 1] [0 2])
+    (check-line matrix target [1 0] [1 1] [1 2])
+    (check-line matrix target [2 0] [2 1] [2 2])
+    (check-line matrix target [0 0] [1 0] [2 0])
+    (check-line matrix target [0 1] [1 1] [2 1])
+    (check-line matrix target [0 2] [1 2] [2 2])
+    (check-line matrix target [0 0] [1 1] [2 2])
+    (check-line matrix target [0 2] [1 1] [2 0])))
 
 (defn matrix-winner [matrix]
   (find identity (map (fn [x] (check-lines matrix x)) [:mine :yours])))

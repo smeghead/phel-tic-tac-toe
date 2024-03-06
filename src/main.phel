@@ -44,10 +44,6 @@
 (defn render-cursor [cursor matrix]
   (let [{:x board-x :y board-y} (board-position cursor)
         char (rule/matrix-cell-char matrix cursor)]
-#    (gui/render 0 8 (format "Cursor: (%d, %d)" (cursor :x) (cursor :y)))
-#    (gui/render 0 9 (format "%s %s %s" (get-in matrix [0 0]) (get-in matrix [0 1]) (get-in matrix [0 2])))
-#    (gui/render 0 10 (format "%s %s %s" (get-in matrix [1 0]) (get-in matrix [1 1]) (get-in matrix [1 2])))
-#    (gui/render 0 11 (format "%s %s %s" (get-in matrix [2 0]) (get-in matrix [2 1]) (get-in matrix [2 2])))
     (gui/render board-x board-y char "cursor")))
 
 (defn game-over [message]
@@ -74,8 +70,6 @@
   (loop [cursor initial-cursor
          matrix (rule/create-matrix)]
     (render-board matrix)
-#    (println "Move your cursor with the arrow-keys [UP, DOWN, LEFT, RIGHT]")
-
 
     (let [{:hex in} (gui/read-input 3)
           input (directions in)
