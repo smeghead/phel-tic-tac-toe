@@ -1,5 +1,6 @@
 (ns phel-tic-tac-toe\main
-  (:require phel-cli-gui\terminal-gui :as gui))
+  (:require phel-cli-gui\terminal-gui :as gui)
+  (:require tic-tac-toe\rule))
 
 (gui/add-output-formatter {:style-name "cursor" :foreground "black" :background "red" :options ["bold"]})
 
@@ -13,51 +14,76 @@
   {"1b5b44" :left
    "1b5b42" :down
    "1b5b43" :right
-   "1b5b41" :up})
+   "1b5b41" :up
+   "0a"   :enter})
 
-(defn move-cursor [c next-direction]
-  (if (nil? next-direction)
+(defn update-cursor [c input]
+  (if (nil? input)
     c
-    (case next-direction
-      :left (if (>= 0 (c :x)) c (update-in c [:x] dec))
-      :right (if (<= (dec (c :width)) (c :x)) c (update-in c [:x] inc))
-      :up (if (>= 0 (c :y)) c (update-in c [:y] dec))
-      :down (if (<= (dec (c :height)) (c :y)) c (update-in c [:y] inc)))))
+    (let [allow-left (>= 0 (c :x))
+          allow-right (<= (dec (c :width)) (c :x))
+          allow-up (>= 0 (c :y))
+          allow-down (<= (dec (c :height)) (c :y))]
+      (cond
+        (= input :left)  (if allow-left  c (update c :x dec))
+        (= input :right) (if allow-right c (update c :x inc))
+        (= input :up)    (if allow-up    c (update c :y dec))
+        (= input :down)  (if allow-down  c (update c :y inc))
+        true c))))
 
+(defn update-matrix [matrix cursor input]
+  (if (nil? input)
+    matrix
+    (cond
+      (= input :enter) (put-in matrix [(cursor :x) (cursor :y)] 1)
+      true matrix)))
 
-(defn render-cursor [cursor]
-  (let [x (inc (inc (* (cursor :x) 2)))
-        y (inc (* (cursor :y) 2))]
-    (gui/render x y " " "cursor")))
+(defn- board-position [{:x x :y y}]
+  {:x (+ (* x 2) 2) :y (inc (* y 2))})
+
+(defn render-cursor [cursor matrix]
+  (let [{:x board-x :y board-y} (board-position cursor)
+        char (rule/matrix-cell-char matrix cursor)]
+    (gui/render 0 8 (format "Cursor: (%d, %d)" (cursor :x) (cursor :y)))
+    (gui/render 0 9 (format "%d %d %d" (get-in matrix [0 0]) (get-in matrix [0 1]) (get-in matrix [0 2])))
+    (gui/render 0 10 (format "%d %d %d" (get-in matrix [1 0]) (get-in matrix [1 1]) (get-in matrix [1 2])))
+    (gui/render 0 11 (format "%d %d %d" (get-in matrix [2 0]) (get-in matrix [2 1]) (get-in matrix [2 2])))
+    (gui/render board-x board-y char "cursor")))
 
 (defn game-over [cursor]
   (render-cursor cursor)
   (println "GAME OVER")
   (php/exit))
 
-(defn render-board []
+(defn render-board [matrix]
   (gui/clear-screen)
-  (gui/render-board board {:horizontal "-" :vertical "|" :corner "+"})
+  (gui/render 0 0 "┌─┬─┬─┐")
   (for [y :range [1 7 2]]
-    (for [x :range [3 6 2]]
+    (for [x :range [1 8 2]]
       (gui/render x y "│"))) 
   (for [y :range [2 5 2]]
-    (gui/render 2 y "─┼─┼─"))
-  )
+    (gui/render 0 y "├─┼─┼─┤"))
+  (gui/render 0 6 "└─┴─┴─┘")
+  (for [y :range [0 3]]
+    (for [x :range [0 3]]
+      (let [{:x board-x :y board-y} (board-position {:x x :y y})]
+        (gui/render board-x board-y (rule/matrix-cell-char matrix {:x x :y y}))))))
 
 (def initial-cursor (cursor-struct 3 3 0 0))
 
-(defn simple-game []
-  (loop [cursor initial-cursor]
-    (render-board)
-    (println "Move your cursor with the arrow-keys [UP, DOWN, LEFT, RIGHT]")
+(defn tic-tac-toe []
+  (loop [cursor initial-cursor
+         matrix (rule/create-matrix)]
+    (render-board matrix)
+#    (println "Move your cursor with the arrow-keys [UP, DOWN, LEFT, RIGHT]")
 
     (let [{:hex in} (gui/read-input 3)
-          next-direction (directions in)
-          new-cursor (move-cursor cursor next-direction)]
-
-      (render-cursor new-cursor)
+          input (directions in)
+          new-cursor (update-cursor cursor input)
+          new-matrix (update-matrix matrix new-cursor input)]
+      (println new-matrix)
+      (render-cursor new-cursor new-matrix)
       (php/usleep 50000)
-      (recur new-cursor))))
+      (recur new-cursor new-matrix))))
 
-(simple-game)
+(tic-tac-toe)
