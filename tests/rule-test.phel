@@ -8,8 +8,34 @@
     (is (= 3 (count (matrix 0))))))
 
 (deftest value-map-test
-  (let [matrix [[0 1 2] [8 0 0] [0 0 0]]]
+  (let [matrix [[:blank :mine :yours] [8 :blank :blank] [:blank :blank :blank]]]
     (is (= " " (rule/matrix-cell-char matrix {:x 0 :y 0})))
-    (is (= "○" (rule/matrix-cell-char matrix {:x 0 :y 1})))
-    (is (= "×" (rule/matrix-cell-char matrix {:x 0 :y 2})))
+    (is (= "●" (rule/matrix-cell-char matrix {:x 0 :y 1})))
+    (is (= "○" (rule/matrix-cell-char matrix {:x 0 :y 2})))
     (is (= "_" (rule/matrix-cell-char matrix {:x 1 :y 0})))))
+
+(deftest judgement-test
+  (let [matrix [[:blank :mine :yours]
+                [8 :mine :blank]
+                [:blank :mine :blank]]]
+    (is (= :mine (rule/matrix-winner matrix)) "virtical"))
+  (let [matrix [[:blank :blank :mine]
+                [8 :blank :mine]
+                [:blank :blank :mine]]]
+    (is (= :mine (rule/matrix-winner matrix)) "virtical"))
+  (let [matrix [[:mine :blank :yours]
+                [8 :mine :blank]
+                [:blank :blank :mine]]]
+    (is (= :mine (rule/matrix-winner matrix)) "cross check"))
+  (let [matrix [[:blank :blank :mine]
+                [:blank :mine :blank]
+                [:mine :blank :blank]]]
+    (is (= :mine (rule/matrix-winner matrix)) "cross check reverse"))
+  (let [matrix [[:yours :yours :yours]
+                [8 :mine :blank]
+                [:blank :mine :blank]]]
+    (is (= :yours (rule/matrix-winner matrix)) "horizon"))
+  (let [matrix [[:yours :blank :yours]
+                [8 :mine :blank]
+                [:blank :mine :blank]]]
+    (is (= nil (rule/matrix-winner matrix)))))

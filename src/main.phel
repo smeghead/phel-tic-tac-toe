@@ -15,7 +15,7 @@
    "1b5b42" :down
    "1b5b43" :right
    "1b5b41" :up
-   "0a"   :enter})
+   "0a"     :enter})
 
 (defn update-cursor [c input]
   (if (nil? input)
@@ -35,7 +35,7 @@
   (if (nil? input)
     matrix
     (cond
-      (= input :enter) (put-in matrix [(cursor :x) (cursor :y)] 1)
+      (= input :enter) (put-in matrix [(cursor :x) (cursor :y)] :mine)
       true matrix)))
 
 (defn- board-position [{:x x :y y}]
@@ -44,15 +44,14 @@
 (defn render-cursor [cursor matrix]
   (let [{:x board-x :y board-y} (board-position cursor)
         char (rule/matrix-cell-char matrix cursor)]
-    (gui/render 0 8 (format "Cursor: (%d, %d)" (cursor :x) (cursor :y)))
-    (gui/render 0 9 (format "%d %d %d" (get-in matrix [0 0]) (get-in matrix [0 1]) (get-in matrix [0 2])))
-    (gui/render 0 10 (format "%d %d %d" (get-in matrix [1 0]) (get-in matrix [1 1]) (get-in matrix [1 2])))
-    (gui/render 0 11 (format "%d %d %d" (get-in matrix [2 0]) (get-in matrix [2 1]) (get-in matrix [2 2])))
+#    (gui/render 0 8 (format "Cursor: (%d, %d)" (cursor :x) (cursor :y)))
+#    (gui/render 0 9 (format "%s %s %s" (get-in matrix [0 0]) (get-in matrix [0 1]) (get-in matrix [0 2])))
+#    (gui/render 0 10 (format "%s %s %s" (get-in matrix [1 0]) (get-in matrix [1 1]) (get-in matrix [1 2])))
+#    (gui/render 0 11 (format "%s %s %s" (get-in matrix [2 0]) (get-in matrix [2 1]) (get-in matrix [2 2])))
     (gui/render board-x board-y char "cursor")))
 
-(defn game-over [cursor]
-  (render-cursor cursor)
-  (println "GAME OVER")
+(defn game-over [message]
+  (println message)
   (php/exit))
 
 (defn render-board [matrix]
@@ -77,13 +76,18 @@
     (render-board matrix)
 #    (println "Move your cursor with the arrow-keys [UP, DOWN, LEFT, RIGHT]")
 
+
     (let [{:hex in} (gui/read-input 3)
           input (directions in)
           new-cursor (update-cursor cursor input)
           new-matrix (update-matrix matrix new-cursor input)]
-      (println new-matrix)
       (render-cursor new-cursor new-matrix)
       (php/usleep 50000)
+
+      (case (rule/matrix-winner new-matrix)
+        :mine (game-over "You WON!")
+        :yours (game-over "You LOSE!"))
+
       (recur new-cursor new-matrix))))
 
 (tic-tac-toe)

@@ -1,14 +1,61 @@
 (ns tic-tac-toe\rule)
 
 (defn create-matrix []
-  [[0 0 0]
-   [0 0 0]
-   [0 0 0]])
+  [[:blank :blank :blank]
+   [:blank :blank :blank]
+   [:blank :blank :blank]])
 
-(def- value-map {0 " "
-                 1 "○"
-                 2 "×"})
+(def- value-map {:blank " "
+                 :mine "●"
+                 :yours "○"})
 
 (defn matrix-cell-char [matrix {:x x :y y}]
   (let [value (get-in matrix [x y])]
     (or (value-map value) "_")))
+
+
+(defn- check-lines [matrix target]
+  (or
+    (if (= (->> (range 0 3)
+             (map (fn [x] (get-in matrix [0 x])))
+             (filter (fn [x] (= x target)))
+             (count)) 3)
+      target)
+    (if (= (->> (range 0 3)
+             (map (fn [x] (get-in matrix [1 x])))
+             (filter (fn [x] (= x target)))
+             (count)) 3)
+      target)
+    (if (= (->> (range 0 3)
+             (map (fn [x] (get-in matrix [2 x])))
+             (filter (fn [x] (= x target)))
+             (count)) 3)
+      target)
+    (if (= (->> (range 0 3)
+             (map (fn [x] (get-in matrix [x 0])))
+             (filter (fn [x] (= x target)))
+             (count)) 3)
+      target)
+    (if (= (->> (range 0 3)
+             (map (fn [x] (get-in matrix [x 1])))
+             (filter (fn [x] (= x target)))
+             (count)) 3)
+      target)
+    (if (= (->> (range 0 3)
+             (map (fn [x] (get-in matrix [x 2])))
+             (filter (fn [x] (= x target)))
+             (count)) 3)
+      target)
+    (and
+      (= (get-in matrix [0 0]) target)
+      (= (get-in matrix [1 1]) target)
+      (= (get-in matrix [2 2]) target)
+      target)
+    (and
+      (= (get-in matrix [0 2]) target)
+      (= (get-in matrix [1 1]) target)
+      (= (get-in matrix [2 0]) target)
+      target)))
+
+(defn matrix-winner [matrix]
+  (find identity (map (fn [x] (check-lines matrix x)) [:mine :yours])))
