@@ -39,3 +39,22 @@
                 [8 :mine :blank]
                 [:blank :mine :blank]]]
     (is (= nil (rule/matrix-winner matrix)))))
+
+(deftest matrix-opposite-position-test
+  (let [matrix [[:mine :blank :blank]
+                [:mine :blank :blank]
+                [:blank :blank :blank]]]
+    (is (= [2 0] (rule/matrix-opposite-position matrix)) "x line"))
+  (let [matrix [[:mine :mine :blank]
+                [:blank :blank :blank]
+                [:blank :blank :blank]]]
+    (is (= [0 2] (rule/matrix-opposite-position matrix)) "y line"))
+  (let [matrix [[:blank :blank :blank]
+                [:blank :blank :blank]
+                [:blank :blank :blank]]]
+    (is (= [1 1] (rule/matrix-opposite-position matrix)) "center"))
+  (let [matrix [[:mine :mine :mine]
+                [:mine :mine :mine]
+                [:mine :mine :blank]]]
+    (is (= [2 2] (rule/matrix-opposite-position matrix)) "center")))
+
