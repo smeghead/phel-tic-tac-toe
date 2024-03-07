@@ -68,6 +68,5 @@
   (let [matrix [[:mine :mine :yours]
                 [:yours :mine :blank]
                 [:mine :blank :blank]]]
-    (is (= [2 1] (rule/matrix-opposite-position matrix)) "multiple reach"))
-    )
+    (is (= [2 1] (rule/matrix-opposite-position matrix)) "multiple reach")))
 

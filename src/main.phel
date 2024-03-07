@@ -4,10 +4,7 @@
 
 (gui/add-output-formatter {:style-name "cursor" :foreground "black" :background "red" :options ["bold"]})
 
-(defstruct board-struct [width height])
 (defstruct cursor-struct [width height x y])
-
-(def board (board-struct 7 7))
 
 # Hexadecimal keys
 (def directions
