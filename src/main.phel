@@ -58,7 +58,14 @@
       (gui/render x y "│"))) 
   (for [y :range [2 5 2]]
     (gui/render 0 y "├─┼─┼─┤"))
-  (gui/render 0 6 "└─┴─┴─┘"))
+  (gui/render 0 6 "└─┴─┴─┘")
+  (gui/render 10 0 "Operation:")
+  (gui/render 10 1 "←: cursor move left")
+  (gui/render 10 2 "→: cursor move right")
+  (gui/render 10 3 "↑: cursor move up")
+  (gui/render 10 4 "↓: cursor move down")
+  (gui/render 10 5 "Enter: put a stone")
+  )
 
 (defn render-board [matrix]
   (for [y :range [0 3]]
