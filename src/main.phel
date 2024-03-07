@@ -66,6 +66,11 @@
 
 (def initial-cursor (cursor-struct 3 3 0 0))
 
+(defn judgement [matrix]
+  (case (rule/matrix-winner matrix)
+    :mine (game-over "You WON!")
+    :yours (game-over "You LOSE!")))
+
 (defn tic-tac-toe []
   (loop [cursor initial-cursor
          matrix (rule/create-matrix)]
@@ -76,12 +81,16 @@
           new-cursor (update-cursor cursor input)
           new-matrix (update-matrix matrix new-cursor input)]
       (render-cursor new-cursor new-matrix)
+
+      (judgement new-matrix)
+
+      # opposite
+      (let [pos (rule/matrix-opposite-position matrix)]
+        (if pos
+          (let [opposite-matrix (update-in new-matrix pos :yours)]
+            (render-cursor new-cursor opposite-matrix))))
+
       (php/usleep 50000)
-
-      (case (rule/matrix-winner new-matrix)
-        :mine (game-over "You WON!")
-        :yours (game-over "You LOSE!"))
-
       (recur new-cursor new-matrix))))
 
 (tic-tac-toe)
