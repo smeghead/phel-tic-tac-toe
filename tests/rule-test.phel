@@ -38,7 +38,11 @@
   (let [matrix [[:yours :blank :yours]
                 [8 :mine :blank]
                 [:blank :mine :blank]]]
-    (is (= nil (rule/matrix-winner matrix)))))
+    (is (= nil (rule/matrix-winner matrix))))
+  (let [matrix [[:yours :mine :yours]
+                [:mine :mine :yours]
+                [:mine :yours :mine]]]
+    (is (= :draw (rule/matrix-winner matrix)) "draw")))
 
 (deftest matrix-opposite-position-test
   (let [matrix [[:mine :blank :blank]
@@ -61,5 +65,9 @@
                 [:yours :yours :blank]
                 [:mine :blank :blank]]]
     (is (= [0 2] (rule/matrix-opposite-position matrix)) "y line 2"))
+  (let [matrix [[:mine :mine :yours]
+                [:yours :mine :blank]
+                [:mine :blank :blank]]]
+    (is (= [2 1] (rule/matrix-opposite-position matrix)) "multiple reach"))
     )
 

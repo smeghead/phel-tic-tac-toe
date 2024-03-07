@@ -32,12 +32,14 @@
     (apply fn [matrix target [0 2] [1 1] [2 0]])))
 
 (defn matrix-winner [matrix]
-  (find identity (map (fn [x] (search-lines check-line matrix x)) [:mine :yours])))
+  (if (nil? (find (fn [x] (= x :blank)) (flatten matrix)))
+    :draw
+    (find identity (map (fn [x] (search-lines check-line matrix x)) [:mine :yours]))))
 
 (defn- next-position [matrix target p1 p2 p3]
   (let [count (count (filter (fn [x] (= (get-in matrix x) target)) [p1 p2 p3]))]
     (if (= count 2)
-      (find (fn [x] (not= (get-in matrix x) target)) [p1 p2 p3]))))
+      (find (fn [x] (= (get-in matrix x) :blank)) [p1 p2 p3]))))
 
 (defn- cells []
   (for [x :range [0 3]
