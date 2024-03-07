@@ -56,5 +56,10 @@
   (let [matrix [[:mine :mine :mine]
                 [:mine :mine :mine]
                 [:mine :mine :blank]]]
-    (is (= [2 2] (rule/matrix-opposite-position matrix)) "center")))
+    (is (= [2 2] (rule/matrix-opposite-position matrix)) "center"))
+  (let [matrix [[:mine :mine :blank]
+                [:yours :yours :blank]
+                [:mine :blank :blank]]]
+    (is (= [0 2] (rule/matrix-opposite-position matrix)) "y line 2"))
+    )
 

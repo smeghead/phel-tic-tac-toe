@@ -73,6 +73,7 @@
     :mine (game-over "You WON!")
     :yours (game-over "You LOSE!")))
 
+(def c (var 0))
 (defn tic-tac-toe []
   (draw-board)
   (loop [cursor initial-cursor
@@ -95,6 +96,8 @@
             (let [pos (rule/matrix-opposite-position new-matrix)
                   opposite-matrix (put-in new-matrix pos :yours)]
               (println opposite-matrix)
+              (set! c (inc (deref c)))
+              (gui/render 0 (+ 10 (deref c)) (format "(%d, %d)" (pos 0) (pos 1)))
               (render-board opposite-matrix)
 
               (judgement opposite-matrix)
