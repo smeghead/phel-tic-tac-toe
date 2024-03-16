@@ -32,7 +32,9 @@
   (if (nil? input)
     matrix
     (cond
-      (= input :enter) (put-in matrix [(cursor :x) (cursor :y)] :mine)
+      (= input :enter) (if (rule/matrix-puttable matrix cursor)
+                         (put-in matrix [(cursor :x) (cursor :y)] :mine)
+                         matrix)
       true matrix)))
 
 (defn- board-position [{:x x :y y}]
@@ -97,7 +99,7 @@
             (judgement new-matrix)
 
             # opposite
-            (if (= input :enter)
+            (if (and (= input :enter) (rule/matrix-puttable matrix cursor))
               (let [pos (rule/matrix-opposite-position new-matrix)
                     opposite-matrix (put-in new-matrix pos :yours)]
                 (render-board opposite-matrix)

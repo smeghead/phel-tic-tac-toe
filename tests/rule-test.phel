@@ -14,6 +14,20 @@
     (is (= "○" (rule/matrix-cell-char matrix {:x 0 :y 2})))
     (is (= "_" (rule/matrix-cell-char matrix {:x 1 :y 0})))))
 
+(deftest matrix-puttable-test
+  (let [matrix [[:blank :mine :yours]
+                [8 :mine :blank]
+                [:blank :mine :blank]]]
+    (is (= true (rule/matrix-puttable matrix {:x 0 :y 0}))))
+  (let [matrix [[:blank :mine :yours]
+                [8 :mine :blank]
+                [:blank :mine :blank]]]
+    (is (= false (rule/matrix-puttable matrix {:x 0 :y 1}))))
+  (let [matrix [[:blank :mine :yours]
+                [8 :mine :blank]
+                [:blank :mine :blank]]]
+    (is (= false (rule/matrix-puttable matrix {:x 0 :y 2})))))
+
 (deftest judgement-test
   (let [matrix [[:blank :mine :yours]
                 [8 :mine :blank]

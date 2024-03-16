@@ -1,14 +1,14 @@
 # phel-tic-tac-toe
 
-
-
-## Development
+## Run
 
 ```bash
 docker run -it --rm -v $(pwd):/usr/src -w /usr/src composer bash
 # composer install
 # vendor/bin/phel run src/main.phel
 ```
+
+## Development
 
 ### Test
 

@@ -13,6 +13,9 @@
   (let [value (get-in matrix [x y])]
     (or (value-map value) "_")))
 
+(defn matrix-puttable [matrix {:x x :y y}]
+  (= (get-in matrix [x y]) :blank))
+
 (defn- check-line [matrix target p1 p2 p3]
   (and
     (= (get-in matrix p1) target)
