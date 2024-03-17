@@ -16,5 +16,10 @@
     ],
     "require": {
         "chemaclass/phel-cli-gui": "dev-main"
+    },
+    "scripts": {
+        "test": [
+            "vendor/bin/phel test"
+        ]
     }
 }
