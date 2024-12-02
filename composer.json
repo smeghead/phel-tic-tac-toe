@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "chemaclass/phel-cli-gui": "dev-main"
+        "chemaclass/phel-cli-gui": "^0.4"
     },
     "scripts": {
         "test": [
