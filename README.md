@@ -3,7 +3,7 @@
 ## Run
 
 ```bash
-docker run -it --rm -v $(pwd):/usr/src -w /usr/src composer bash
+docker compose run --rm php_cli bash
 # composer install
 # vendor/bin/phel run src/main.phel
 ```
